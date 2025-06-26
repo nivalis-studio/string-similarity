@@ -4,11 +4,11 @@ Finds degree of similarity between two strings, based on [Dice's Coefficient](ht
 
 ## Table of Contents
 
-- [string-similarity](#string-similarity)
+- [@nivalis/string-similarity](#nivalisstring-similarity)
   - [Table of Contents](#table-of-contents)
   - [Usage](#usage)
-    - [For Node.js](#for-nodejs)
-    - [For browser apps](#for-browser-apps)
+    - [Installation](#installation)
+    - [Basic Usage](#basic-usage)
   - [API](#api)
     - [compareTwoStrings(string1, string2)](#comparetwostringsstring1-string2)
       - [Arguments](#arguments)
@@ -19,52 +19,47 @@ Finds degree of similarity between two strings, based on [Dice's Coefficient](ht
       - [Returns](#returns-1)
       - [Examples](#examples-1)
   - [Release Notes](#release-notes)
-    - [2.0.0](#200)
-    - [3.0.0](#300)
-    - [3.0.1](#301)
-    - [4.0.1](#401)
-    - [4.0.2](#402)
-    - [4.0.3](#403)
 
 ## Usage
 
-#### For Node.js
+### Installation
 
-Install using:
+Install using npm:
 
 ```shell
-$ npm install @nivalis/string-similarity
+npm install @nivalis/string-similarity
 ```
 
-In your code:
+Or using other package managers:
+
+```shell
+# Using yarn
+yarn add @nivalis/string-similarity
+
+# Using pnpm
+pnpm add @nivalis/string-similarity
+
+# Using bun
+bun add @nivalis/string-similarity
+```
+
+### Basic Usage
+
+This package provides ESM exports and is written in TypeScript:
 
 ```javascript
-import stringSimilarity from "@nivalis/string-similarity";
+import { compareTwoStrings, findBestMatch } from "@nivalis/string-similarity";
 
-const similarity = stringSimilarity.compareTwoStrings("healed", "sealed");
+const similarity = compareTwoStrings("healed", "sealed");
 
-const matches = stringSimilarity.findBestMatch("healed", ["edward", "sealed", "theatre"]);
+const matches = findBestMatch("healed", ["edward", "sealed", "theatre"]);
 ```
 
-#### For browser apps
-
-Include `<script src="//unpkg.com/string-similarity/umd/string-similarity.min.js"></script>` to get the latest version.
-
-Or `<script src="//unpkg.com/string-similarity@4.0.1/umd/string-similarity.min.js"></script>` to get a specific version (4.0.1) in this case.
-
-This exposes a global variable called `stringSimilarity` which you can start using.
-
-```
-<script>
-  stringSimilarity.compareTwoStrings('what!', 'who?');
-</script>
-```
-
-(The package is exposed as UMD, so you can consume it as such)
+**Note**: This package is ESM-only and requires Node.js 16+ or a modern bundler that supports ESM.
 
 ## API
 
-The package contains two methods:
+The package exports two functions:
 
 ### compareTwoStrings(string1, string2)
 
@@ -84,22 +79,24 @@ Order does not make a difference.
 ##### Examples
 
 ```javascript
-stringSimilarity.compareTwoStrings("healed", "sealed");
+import { compareTwoStrings } from "@nivalis/string-similarity";
+
+compareTwoStrings("healed", "sealed");
 // → 0.8
 
-stringSimilarity.compareTwoStrings(
+compareTwoStrings(
   "Olive-green table for sale, in extremely good condition.",
   "For sale: table in very good  condition, olive green in colour.",
 );
 // → 0.6060606060606061
 
-stringSimilarity.compareTwoStrings(
+compareTwoStrings(
   "Olive-green table for sale, in extremely good condition.",
   "For sale: green Subaru Impreza, 210,000 miles",
 );
 // → 0.2558139534883721
 
-stringSimilarity.compareTwoStrings(
+compareTwoStrings(
   "Olive-green table for sale, in extremely good condition.",
   "Wanted: mountain bike with at least 21 gears.",
 );
@@ -122,7 +119,9 @@ Compares `mainString` against each string in `targetStrings`.
 ##### Examples
 
 ```javascript
-stringSimilarity.findBestMatch('Olive-green table for sale, in extremely good condition.', [
+import { findBestMatch } from "@nivalis/string-similarity";
+
+findBestMatch('Olive-green table for sale, in extremely good condition.', [
   'For sale: green Subaru Impreza, 210,000 miles',
   'For sale: table in very good condition, olive green in colour.',
   'Wanted: mountain bike with at least 21 gears.'
@@ -176,5 +175,10 @@ stringSimilarity.findBestMatch('Olive-green table for sale, in extremely good co
 
 - Simplify some conditional statements. Also, update deps. (see [PR50](https://github.com/aceakash/string-similarity/pull/50))
 
-![Build status](https://codeship.com/projects/2aa453d0-0959-0134-8a76-4abcb29fe9b4/status?branch=master)
-[![Known Vulnerabilities](https://snyk.io/test/github/aceakash/string-similarity/badge.svg)](https://snyk.io/test/github/aceakash/string-similarity)
+### 5.0.0
+
+- **BREAKING**: Converted to TypeScript and ESM-only
+- **BREAKING**: Changed from default export to named exports
+- **BREAKING**: Removed UMD/browser builds - use a bundler or modern browser with ESM support
+- Updated to use modern TypeScript and build tools
+- Package now scoped as `@nivalis/string-similarity`
