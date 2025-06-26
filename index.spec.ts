@@ -1,4 +1,4 @@
-var stringSimilarity = require('../index');
+var stringSimilarity = require('./index');
 
 describe('compareTwoStrings', function () {
   var compareTwoStrings = stringSimilarity.compareTwoStrings;
