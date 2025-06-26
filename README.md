@@ -1,7 +1,4 @@
-# ⚰️ ⚰️ DEPRECATED ⚰️ ⚰️ 
-This repository and the associated NPM package is no longer being maintained.
-
-# string-similarity
+# @nivalis/string-similarity
 
 Finds degree of similarity between two strings, based on [Dice's Coefficient](http://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient), which is mostly better than [Levenshtein distance](http://en.wikipedia.org/wiki/Levenshtein_distance).
 
@@ -36,21 +33,17 @@ Finds degree of similarity between two strings, based on [Dice's Coefficient](ht
 Install using:
 
 ```shell
-npm install string-similarity --save
+$ npm install @nivalis/string-similarity
 ```
 
 In your code:
 
 ```javascript
-var stringSimilarity = require("string-similarity");
+import stringSimilarity from "@nivalis/string-similarity";
 
-var similarity = stringSimilarity.compareTwoStrings("healed", "sealed");
+const similarity = stringSimilarity.compareTwoStrings("healed", "sealed");
 
-var matches = stringSimilarity.findBestMatch("healed", [
-  "edward",
-  "sealed",
-  "theatre",
-]);
+const matches = stringSimilarity.findBestMatch("healed", ["edward", "sealed", "theatre"]);
 ```
 
 #### For browser apps
@@ -96,19 +89,19 @@ stringSimilarity.compareTwoStrings("healed", "sealed");
 
 stringSimilarity.compareTwoStrings(
   "Olive-green table for sale, in extremely good condition.",
-  "For sale: table in very good  condition, olive green in colour."
+  "For sale: table in very good  condition, olive green in colour.",
 );
 // → 0.6060606060606061
 
 stringSimilarity.compareTwoStrings(
   "Olive-green table for sale, in extremely good condition.",
-  "For sale: green Subaru Impreza, 210,000 miles"
+  "For sale: green Subaru Impreza, 210,000 miles",
 );
 // → 0.2558139534883721
 
 stringSimilarity.compareTwoStrings(
   "Olive-green table for sale, in extremely good condition.",
-  "Wanted: mountain bike with at least 21 gears."
+  "Wanted: mountain bike with at least 21 gears.",
 );
 // → 0.1411764705882353
 ```

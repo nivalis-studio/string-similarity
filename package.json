@@ -1,16 +1,61 @@
 {
-  "name": "string-similarity",
+  "name": "@nivalis/string-similarity",
   "version": "4.0.4",
   "description": "Finds degree of similarity between strings, based on Dice's Coefficient, which is mostly better than Levenshtein distance.",
-  "main": "src/index.js",
-  "scripts": {
-    "test": "jasmine --config=src/spec/support/jasmine.json",
-    "build": "rm -rf umd && webpack-cli",
-    "prepublish": "npm test && npm run build"
-  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "author": "Akash Kurdekar <npm@kurdekar.com> (http://untilfalse.com/)",
+  "type": "module",
   "repository": {
     "type": "git",
-    "url": "git://github.com/aceakash/string-similarity.git"
+    "url": "git+https://github.com/nivalis/string-similarity.git"
+  },
+  "homepage": "https://github.com/nivalis/string-similarity#readme",
+  "bugs": {
+    "url": "https://github.com/nivalis/string-similarity/issues"
+  },
+  "exports": {
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "sideEffects": false,
+  "packageManager": "bun@1.2.15",
+  "scripts": {
+    "test": "bun test",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "ts": "tsc",
+    "build": "tsdown",
+    "prepack": "tsdown",
+    "prepare": "bunx lefthook install"
+  },
+  "files": [
+    "dist",
+    "package.json",
+    "README.md"
+  ],
+  "devDependencies": {
+    "@commitlint/cli": "19.8.1",
+    "@commitlint/config-conventional": "19.8.1",
+    "@nivalis/eslint-config": "5.3.1",
+    "@nivalis/prettier-config": "3.5.3",
+    "@types/bun": "latest",
+    "eslint": "9.28.0",
+    "lefthook": "1.11.13",
+    "lint-staged": "16.1.0",
+    "prettier": "3.5.3",
+    "tsdown": "0.12.7"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "lint-staged": {
+    "*": "eslint --quiet --fix"
   },
   "keywords": [
     "strings",
@@ -24,16 +69,5 @@
     "matching",
     "dice",
     "levenshtein"
-  ],
-  "files": [
-    "src/index.js",
-    "umd/string-similarity.min.js"
-  ],
-  "author": "Akash Kurdekar <npm@kurdekar.com> (http://untilfalse.com/)",
-  "license": "ISC",
-  "devDependencies": {
-    "jasmine": "^3.6.3",
-    "webpack": "^5.11.1",
-    "webpack-cli": "^4.3.1"
-  }
+  ]
 }
