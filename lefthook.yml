@@ -3,6 +3,14 @@ commit-msg:
     commitlint:
       run: bun commitlint --edit
 pre-commit:
-  commands:
-    lint:
-      run: bun lint-staged
+  jobs:
+    - run: bun eslint --fix {staged_files}
+      glob:
+        - "*.js"
+        - "*.jsx"
+        - "*.ts"
+        - "*.tsx"
+        - "*.json"
+        - "*.jsonc"
+        - "*.css"
+      stage_fixed: true
