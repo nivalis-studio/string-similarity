@@ -90,6 +90,10 @@ describe('findBestMatch', () => {
       findBestMatch('');
     }).toThrowError(badArgsErrorMsg);
 
+    expect(() => {
+      findBestMatch('', ['foo']);
+    }).toThrowError(badArgsErrorMsg);
+
     const invalidMainArgument = 8;
 
     expect(() => {
