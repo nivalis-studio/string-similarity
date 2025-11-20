@@ -12,6 +12,10 @@ function areArgsValid(
     return false;
   }
 
+  if (mainString.trim().length === 0) {
+    return false;
+  }
+
   if (!Array.isArray(targetStrings)) {
     return false;
   }
