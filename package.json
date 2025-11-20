@@ -1,6 +1,6 @@
 {
 	"name": "@nivalis/string-similarity",
-	"version": "5.0.0",
+	"version": "5.1.0",
 	"description": "Finds degree of similarity between strings, based on Dice's Coefficient, which is mostly better than Levenshtein distance.",
 	"main": "./dist/index.js",
 	"module": "./dist/index.js",
