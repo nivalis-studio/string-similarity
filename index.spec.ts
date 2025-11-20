@@ -90,9 +90,11 @@ describe('findBestMatch', () => {
       findBestMatch('');
     }).toThrowError(badArgsErrorMsg);
 
+    const invalidMainArgument = 8;
+
     expect(() => {
       // @ts-expect-error Invalid arguments
-      findBestMatch(8);
+      findBestMatch(invalidMainArgument);
     }).toThrowError(badArgsErrorMsg);
   });
 
