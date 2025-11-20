@@ -44,6 +44,10 @@ Lefthook enforces formatting and linting prior to each commit. If a hook modifie
 - Add targeted unit tests for new behavior or regressions.
 - Prefer descriptive variable names and concise comments for non-trivial logic.
 
+### Testing precision
+
+String similarity scores are floating-point values, so assert them with a deterministic tolerance instead of exact equality. Use `expect(score).toBeCloseTo(expected, 12)` (or round to the same number of decimal places) so that minor algorithm tweaks that only affect floating-point precision do not break the suite. Document any alternative tolerance you pick inline with the test so reviewers know the expected numeric precision.
+
 ## Release Process
 
 1. Ensure `bun run build` succeeds and outputs the desired artifacts in `dist/`.
