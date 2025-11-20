@@ -1,184 +1,112 @@
 # @nivalis/string-similarity
 
-Finds degree of similarity between two strings, based on [Dice's Coefficient](http://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient), which is mostly better than [Levenshtein distance](http://en.wikipedia.org/wiki/Levenshtein_distance).
+String similarity helpers powered by [Dice's coefficient](https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient). Use it to rank fuzzy matches, measure duplicate content, or power smart suggestions with predictable, deterministic scoring.
 
-## Table of Contents
+## Highlights
 
-- [@nivalis/string-similarity](#nivalisstring-similarity)
-  - [Table of Contents](#table-of-contents)
-  - [Usage](#usage)
-    - [Installation](#installation)
-    - [Basic Usage](#basic-usage)
-  - [API](#api)
-    - [compareTwoStrings(string1, string2)](#comparetwostringsstring1-string2)
-      - [Arguments](#arguments)
-      - [Returns](#returns)
-      - [Examples](#examples)
-    - [findBestMatch(mainString, targetStrings)](#findbestmatchmainstring-targetstrings)
-      - [Arguments](#arguments-1)
-      - [Returns](#returns-1)
-      - [Examples](#examples-1)
-  - [Release Notes](#release-notes)
+- Modern TypeScript codebase with typed ESM builds
+- Fast O(n) bigram comparison implementation
+- Zero dependencies and side-effect free for optimal tree shaking
+- Works anywhere a JavaScript runtime with ES2020 support is available
 
-## Usage
+## Installation
 
-### Installation
-
-Install using npm:
-
-```shell
-npm install @nivalis/string-similarity
-```
-
-Or using other package managers:
-
-```shell
-# Using yarn
-yarn add @nivalis/string-similarity
-
-# Using pnpm
-pnpm add @nivalis/string-similarity
-
-# Using bun
+```bash
+# pick the package manager you prefer
 bun add @nivalis/string-similarity
+# or
+npm install @nivalis/string-similarity
+# or
+pnpm add @nivalis/string-similarity
 ```
 
-### Basic Usage
+> The package is ESM-only. Use Node.js 18+, Bun, Deno, or a bundler that understands ESM.
 
-This package provides ESM exports and is written in TypeScript:
+## Quick Start
 
-```javascript
-import { compareTwoStrings, findBestMatch } from "@nivalis/string-similarity";
+```ts
+import { compareTwoStrings, findBestMatch } from '@nivalis/string-similarity';
 
-const similarity = compareTwoStrings("healed", "sealed");
+const similarity = compareTwoStrings('healed', 'sealed');
+// similarity === 0.8
 
-const matches = findBestMatch("healed", ["edward", "sealed", "theatre"]);
+const { ratings, bestMatch } = findBestMatch('healed', [
+  'mailed',
+  'sealed',
+  'theatre',
+]);
+
+/* ratings === [
+  { target: 'mailed', rating: 0.4 },
+  { target: 'sealed', rating: 0.8 },
+  { target: 'theatre', rating: 0.36363636363636365 },
+] */
+/* bestMatch === { target: 'sealed', rating: 0.8 } */
 ```
-
-**Note**: This package is ESM-only and requires Node.js 16+ or a modern bundler that supports ESM.
 
 ## API
 
-The package exports two functions:
+### `compareTwoStrings(first: string, second: string): number`
 
-### compareTwoStrings(string1, string2)
+Returns a score between 0 and 1. Whitespace is stripped before comparison and the order of arguments does not matter.
 
-Returns a fraction between 0 and 1, which indicates the degree of similarity between the two strings. 0 indicates completely different strings, 1 indicates identical strings. The comparison is case-sensitive.
+- **`first` / `second`**: Strings with at least two characters for the best signal
+- **Returns**: `number` similarity score
 
-##### Arguments
-
-1. string1 (string): The first string
-2. string2 (string): The second string
-
-Order does not make a difference.
-
-##### Returns
-
-(number): A fraction from 0 to 1, both inclusive. Higher number indicates more similarity.
-
-##### Examples
-
-```javascript
-import { compareTwoStrings } from "@nivalis/string-similarity";
-
-compareTwoStrings("healed", "sealed");
-// → 0.8
-
-compareTwoStrings(
-  "Olive-green table for sale, in extremely good condition.",
-  "For sale: table in very good  condition, olive green in colour.",
-);
-// → 0.6060606060606061
-
-compareTwoStrings(
-  "Olive-green table for sale, in extremely good condition.",
-  "For sale: green Subaru Impreza, 210,000 miles",
-);
-// → 0.2558139534883721
-
-compareTwoStrings(
-  "Olive-green table for sale, in extremely good condition.",
-  "Wanted: mountain bike with at least 21 gears.",
-);
-// → 0.1411764705882353
+```ts
+compareTwoStrings('french', 'quebec');
+// 0
+compareTwoStrings('Olive-green table for sale, in extremely good condition.',
+  'For sale: table in very good condition, olive green in colour.');
+// 0.6060606060606061
 ```
 
-### findBestMatch(mainString, targetStrings)
+### `findBestMatch(mainString: string, targetStrings: string[])`
 
-Compares `mainString` against each string in `targetStrings`.
+Evaluates every entry in `targetStrings` and returns:
 
-##### Arguments
+- `ratings`: ordered array of `{ target: string, rating: number }`
+- `bestMatch`: the record with the highest rating
+- `bestMatchIndex`: the index of `bestMatch` inside `targetStrings`
 
-1. mainString (string): The string to match each target string against.
-2. targetStrings (Array): Each string in this array will be matched against the main string.
-
-##### Returns
-
-(Object): An object with a `ratings` property, which gives a similarity rating for each target string, a `bestMatch` property, which specifies which target string was most similar to the main string, and a `bestMatchIndex` property, which specifies the index of the bestMatch in the targetStrings array.
-
-##### Examples
-
-```javascript
-import { findBestMatch } from "@nivalis/string-similarity";
-
-findBestMatch('Olive-green table for sale, in extremely good condition.', [
+```ts
+const result = findBestMatch('Olive-green table for sale, in extremely good condition.', [
   'For sale: green Subaru Impreza, 210,000 miles',
   'For sale: table in very good condition, olive green in colour.',
-  'Wanted: mountain bike with at least 21 gears.'
+  'Wanted: mountain bike with at least 21 gears.',
 ]);
-// →
-{ ratings:
-   [ { target: 'For sale: green Subaru Impreza, 210,000 miles',
-       rating: 0.2558139534883721 },
-     { target: 'For sale: table in very good condition, olive green in colour.',
-       rating: 0.6060606060606061 },
-     { target: 'Wanted: mountain bike with at least 21 gears.',
-       rating: 0.1411764705882353 } ],
-  bestMatch:
-   { target: 'For sale: table in very good condition, olive green in colour.',
-     rating: 0.6060606060606061 },
-  bestMatchIndex: 1
-}
+
+result.bestMatch.target;
+// 'For sale: table in very good condition, olive green in colour.'
 ```
+
+Invalid arguments throw an error. Pass a non-empty `mainString` and a non-empty array of strings.
+
+## Algorithm Notes
+
+- Based on bigram overlap (Dice coefficient) for predictable rankings
+- Ignores whitespace and repeated bigrams to reduce noise
+- Complexity is O(n) relative to total input length, making it suitable for realtime UI filtering
+
+## Development
+
+```bash
+bun install        # install dependencies
+bun test           # run the Bun test suite
+bun run lint       # biome static analysis
+bun run build      # compile to dist/ via tsdown
+```
+
+Automated hooks are managed by Lefthook. See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed workflows, branch strategy, and release guidance.
 
 ## Release Notes
 
-### 2.0.0
-
-- Removed production dependencies
-- Updated to ES6 (this breaks backward-compatibility for pre-ES6 apps)
-
-### 3.0.0
-
-- Performance improvement for `compareTwoStrings(..)`: now O(n) instead of O(n^2)
-- The algorithm has been tweaked slightly to disregard spaces and word boundaries. This will change the rating values slightly but not enough to make a significant difference
-- Adding a `bestMatchIndex` to the results for `findBestMatch(..)` to point to the best match in the supplied `targetStrings` array
-
-### 3.0.1
-
-- Refactoring: removed unused functions; used `substring` instead of `substr`
-- Updated dependencies
-
-### 4.0.1
-
-- Distributing as an UMD build to be used in browsers.
-
-### 4.0.2
-
-- Update dependencies to latest versions.
-
-### 4.0.3
-
-- Make compatible with IE and ES5. Also, update deps. (see [PR56](https://github.com/aceakash/string-similarity/pull/56))
-
-### 4.0.4
-
-- Simplify some conditional statements. Also, update deps. (see [PR50](https://github.com/aceakash/string-similarity/pull/50))
-
 ### 5.0.0
 
-- **BREAKING**: Converted to TypeScript and ESM-only
-- **BREAKING**: Changed from default export to named exports
-- **BREAKING**: Removed UMD/browser builds - use a bundler or modern browser with ESM support
-- Updated to use modern TypeScript and build tools
-- Package now scoped as `@nivalis/string-similarity`
+- Converted the library to TypeScript and ESM-only exports
+- Switched to named exports `compareTwoStrings` and `findBestMatch`
+- Removed UMD/browser bundles in favor of modern bundler workflows
+
+## License
+
+MIT © Nivalis Studio
