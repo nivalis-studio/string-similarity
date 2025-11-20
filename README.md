@@ -99,6 +99,10 @@ bun run build      # compile to dist/ via tsdown
 
 Automated hooks are managed by Lefthook. See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed workflows, branch strategy, and release guidance.
 
+## Roadmap
+
+- Export an async/bulk API that can precompute bigrams for a target list and reuse them across multiple queries, reducing redundant work for search or autocomplete scenarios.
+
 ## Release Notes
 
 ### 5.0.0
