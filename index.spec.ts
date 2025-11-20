@@ -51,6 +51,16 @@ describe('compareTwoStrings', () => {
       { first: '', second: 'a', expected: 0 },
       { first: 'apple event', second: 'apple    event', expected: 1 },
       {
+        first: 'café noir',
+        second: 'café\u00A0noir',
+        expected: 1,
+      },
+      {
+        first: '東京\u3000駅',
+        second: '東京駅',
+        expected: 1,
+      },
+      {
         first: 'iphone',
         second: 'iphone x',
         expected: 0.909_090_909_090_909_1,
