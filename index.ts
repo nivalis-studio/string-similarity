@@ -1,9 +1,3 @@
-/* eslint-disable @typescript-eslint/no-magic-numbers */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable unicorn/prefer-string-slice */
-/* eslint-disable no-param-reassign */
-/* eslint-disable func-style */
-
 function areArgsValid(
   mainString: string,
   targetStrings: Array<string>,

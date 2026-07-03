@@ -1,5 +1,6 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "bun-template",
@@ -12,9 +13,6 @@
         "lefthook": "2.0.4",
         "tsdown": "0.16.6",
         "typescript": "5.9.3",
-      },
-      "peerDependencies": {
-        "typescript": "^5",
       },
     },
   },

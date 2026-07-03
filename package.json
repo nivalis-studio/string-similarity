@@ -34,7 +34,7 @@
 		"prepare": "lefthook install",
 		"ts": "tsc --noEmit"
 	},
-	"files": ["dist", "package.json", "README.md"],
+	"files": ["dist", "README.md"],
 	"devDependencies": {
 		"@biomejs/biome": "2.3.6",
 		"@commitlint/cli": "20.1.0",
@@ -44,9 +44,6 @@
 		"lefthook": "2.0.4",
 		"tsdown": "0.16.6",
 		"typescript": "5.9.3"
-	},
-	"peerDependencies": {
-		"typescript": "^5"
 	},
 	"keywords": [
 		"strings",
