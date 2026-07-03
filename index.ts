@@ -4,10 +4,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable func-style */
 
-function areArgsValid(
-  mainString: string,
-  targetStrings: Array<string>,
-): boolean {
+function areArgsValid(mainString: unknown, targetStrings: unknown): boolean {
   if (typeof mainString !== 'string') {
     return false;
   }
@@ -70,7 +67,7 @@ function compareTwoStrings(first: string, second: string): number {
 function findBestMatch(mainString: string, targetStrings: Array<string>) {
   if (!areArgsValid(mainString, targetStrings)) {
     throw new Error(
-      'Bad arguments: First argument should be a string, second should be an array of strings',
+      'Bad arguments: mainString must be a non-empty string, targetStrings must be a non-empty array of strings',
     );
   }
 
