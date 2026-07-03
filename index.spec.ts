@@ -65,6 +65,18 @@ describe('compareTwoStrings', () => {
         second: 'iphone x',
         expected: 0.909_090_909_090_909_1,
       },
+      {
+        // NFC (composed é) vs NFD (e + combining acute accent)
+        first: 'café',
+        second: 'cafe\u0301',
+        expected: 1,
+      },
+      {
+        // decomposed vs composed pair inside a longer string
+        first: 'un café noir bien serré',
+        second: 'un cafe\u0301 noir bien serre\u0301',
+        expected: 1,
+      },
     ];
 
     for (const td of testData) {
