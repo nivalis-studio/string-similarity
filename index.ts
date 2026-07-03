@@ -67,29 +67,37 @@ function compareTwoStrings(first: string, second: string): number {
   );
 }
 
-function findBestMatch(mainString: string, targetStrings: Array<string>) {
+function findBestMatch(
+  mainString: string,
+  targetStrings: Array<string>,
+): {
+  ratings: Array<{ target: string; rating: number }>;
+  bestMatch: { target: string; rating: number };
+  bestMatchIndex: number;
+} {
   if (!areArgsValid(mainString, targetStrings)) {
     throw new Error(
       'Bad arguments: First argument should be a string, second should be an array of strings',
     );
   }
 
-  const ratings: Array<{ target: string; rating: number }> = [];
+  const ratings = targetStrings.map(target => ({
+    target,
+    rating: compareTwoStrings(mainString, target),
+  }));
+
   let bestMatchIndex = 0;
   let bestMatchRating = Number.NEGATIVE_INFINITY;
 
-  for (const [i, currentTargetString] of targetStrings.entries()) {
-    const currentRating = compareTwoStrings(mainString, currentTargetString);
-
-    ratings.push({ target: currentTargetString, rating: currentRating });
-
-    if (currentRating > bestMatchRating) {
-      bestMatchRating = currentRating;
+  for (const [i, { rating }] of ratings.entries()) {
+    if (rating > bestMatchRating) {
+      bestMatchRating = rating;
       bestMatchIndex = i;
     }
   }
 
-  const bestMatch = ratings[bestMatchIndex];
+  // biome-ignore lint/style/noNonNullAssertion: areArgsValid guarantees targetStrings (and thus ratings) is non-empty
+  const bestMatch = ratings[bestMatchIndex]!;
 
   return {
     ratings,

@@ -167,4 +167,11 @@ describe('findBestMatch', () => {
 
     expect(matches.bestMatchIndex).toBe(2);
   });
+
+  it('always returns a defined bestMatch, even for a single-element target list', () => {
+    const matches = findBestMatch('healed', ['sealed']);
+
+    expect(matches.bestMatch).toEqual({ target: 'sealed', rating: 0.8 });
+    expect(matches.bestMatchIndex).toBe(0);
+  });
 });
