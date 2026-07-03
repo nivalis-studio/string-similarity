@@ -48,7 +48,7 @@ const { ratings, bestMatch } = findBestMatch('healed', [
 
 ### `compareTwoStrings(first: string, second: string): number`
 
-Returns a score between 0 and 1. Whitespace is stripped before comparison and the order of arguments does not matter.
+Returns a score between 0 and 1. Whitespace is stripped before comparison and the order of arguments does not matter. When both inputs are empty or whitespace-only, the score is `1` only if the raw strings are strictly equal, and `0` otherwise (e.g. `'   '` vs `'\t'` scores `0`).
 
 - **`first` / `second`**: Strings with at least two characters for the best signal
 - **Returns**: `number` similarity score

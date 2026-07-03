@@ -32,7 +32,12 @@ function compareTwoStrings(first: string, second: string): number {
   const normalizedSecond = second.replaceAll(/\s+/g, '');
 
   if (normalizedFirst === normalizedSecond) {
-    return 1; // identical or empty
+    if (normalizedFirst.length === 0) {
+      // both are empty or whitespace-only: only identical raw inputs match
+      return first === second ? 1 : 0;
+    }
+
+    return 1; // identical after whitespace normalization
   }
 
   if (normalizedFirst.length < 2 || normalizedSecond.length < 2) {
