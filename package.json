@@ -2,9 +2,9 @@
 	"name": "@nivalis/string-similarity",
 	"version": "5.2.0",
 	"description": "Finds degree of similarity between strings, based on Dice's Coefficient, which is mostly better than Levenshtein distance.",
-	"main": "./dist/index.js",
-	"module": "./dist/index.js",
-	"types": "./dist/index.d.ts",
+	"main": "./dist/index.mjs",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.mts",
 	"author": "Akash Kurdekar <npm@kurdekar.com>",
 	"type": "module",
 	"repository": {
@@ -16,7 +16,10 @@
 		"url": "https://github.com/nivalis-studio/string-similarity/issues"
 	},
 	"exports": {
-		".": "./dist/index.js",
+		".": {
+			"types": "./dist/index.d.mts",
+			"default": "./dist/index.mjs"
+		},
 		"./package.json": "./package.json"
 	},
 	"publishConfig": {
@@ -30,6 +33,7 @@
 		"lint": "biome check",
 		"lint:fix": "biome check --write",
 		"build": "tsdown",
+		"check:package": "publint",
 		"prepack": "tsdown",
 		"prepare": "lefthook install",
 		"ts": "tsc --noEmit"
@@ -42,6 +46,7 @@
 		"@nivalis/biome-config": "2.3.6",
 		"@types/bun": "latest",
 		"lefthook": "2.0.4",
+		"publint": "^0.3.21",
 		"tsdown": "0.16.6",
 		"typescript": "5.9.3"
 	},

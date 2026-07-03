@@ -2,6 +2,9 @@ commit-msg:
   commands:
     commitlint:
       run: bun commitlint --edit
+pre-push:
+  jobs:
+    - run: bun run build && bun run check:package
 pre-commit:
   parallel: true
   jobs:
