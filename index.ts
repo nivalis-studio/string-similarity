@@ -67,12 +67,14 @@ function compareTwoStrings(first: string, second: string): number {
   );
 }
 
+type Rating = { target: string; rating: number };
+
 function findBestMatch(
   mainString: string,
   targetStrings: Array<string>,
 ): {
-  ratings: Array<{ target: string; rating: number }>;
-  bestMatch: { target: string; rating: number };
+  ratings: Array<Rating>;
+  bestMatch: Rating;
   bestMatchIndex: number;
 } {
   if (!areArgsValid(mainString, targetStrings)) {
