@@ -49,6 +49,9 @@ describe('compareTwoStrings', () => {
       { first: '', second: '', expected: 1 },
       { first: 'a', second: '', expected: 0 },
       { first: '', second: 'a', expected: 0 },
+      { first: '   ', second: '\t', expected: 0 },
+      { first: '  ', second: '  ', expected: 1 },
+      { first: '   ', second: 'a', expected: 0 },
       { first: 'apple event', second: 'apple    event', expected: 1 },
       {
         first: 'café noir',
