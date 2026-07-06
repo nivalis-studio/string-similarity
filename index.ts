@@ -24,9 +24,13 @@ function areArgsValid(mainString: unknown, targetStrings: unknown): boolean {
   return !targetStrings.some(str => typeof str !== 'string');
 }
 
+function normalizeInput(input: string): string {
+  return input.normalize('NFC').replaceAll(/\s+/g, '');
+}
+
 function compareTwoStrings(first: string, second: string): number {
-  const normalizedFirst = first.replaceAll(/\s+/g, '');
-  const normalizedSecond = second.replaceAll(/\s+/g, '');
+  const normalizedFirst = normalizeInput(first);
+  const normalizedSecond = normalizeInput(second);
 
   if (normalizedFirst === normalizedSecond) {
     if (normalizedFirst.length === 0) {

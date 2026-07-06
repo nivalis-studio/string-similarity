@@ -86,6 +86,8 @@ Invalid arguments throw an error. Pass a non-empty `mainString` and a non-empty 
 
 - Based on bigram overlap (Dice coefficient) for predictable rankings
 - Ignores whitespace and repeated bigrams to reduce noise
+- Inputs are Unicode-normalized to NFC before comparison, so composed and decomposed forms of the same text (e.g. `'café'` in NFC vs NFD) score identically
+- Known limitation: bigrams are formed from UTF-16 code units, so surrogate pairs (emoji and other astral-plane characters) are split across bigrams. Results stay deterministic and symmetric, but scores for emoji-heavy strings are approximate
 - Complexity is O(n) relative to total input length, making it suitable for realtime UI filtering
 
 ## Development
