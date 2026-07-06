@@ -48,6 +48,9 @@ describe('compareTwoStrings', () => {
       { first: '', second: '', expected: 1 },
       { first: 'a', second: '', expected: 0 },
       { first: '', second: 'a', expected: 0 },
+      { first: '   ', second: '\t', expected: 0 },
+      { first: '  ', second: '  ', expected: 1 },
+      { first: '   ', second: 'a', expected: 0 },
       { first: 'apple event', second: 'apple    event', expected: 1 },
       {
         first: 'café noir',
@@ -64,6 +67,18 @@ describe('compareTwoStrings', () => {
         second: 'iphone x',
         expected: 0.909_090_909_090_909_1,
       },
+      {
+        // NFC (composed é) vs NFD (e + combining acute accent)
+        first: 'café',
+        second: 'cafe\u0301',
+        expected: 1,
+      },
+      {
+        // decomposed vs composed pair inside a longer string
+        first: 'un café noir bien serré',
+        second: 'un cafe\u0301 noir bien serre\u0301',
+        expected: 1,
+      },
     ];
 
     for (const td of testData) {
@@ -74,7 +89,7 @@ describe('compareTwoStrings', () => {
 
 describe('findBestMatch', () => {
   const badArgsErrorMsg =
-    'Bad arguments: First argument should be a string, second should be an array of strings';
+    'Bad arguments: mainString must be a non-empty string, targetStrings must be a non-empty array of strings';
 
   it('is a function', () => {
     expect(typeof findBestMatch).toBe('function');
@@ -165,5 +180,12 @@ describe('findBestMatch', () => {
     ]);
 
     expect(matches.bestMatchIndex).toBe(2);
+  });
+
+  it('always returns a defined bestMatch, even for a single-element target list', () => {
+    const matches = findBestMatch('healed', ['sealed']);
+
+    expect(matches.bestMatch).toEqual({ target: 'sealed', rating: 0.8 });
+    expect(matches.bestMatchIndex).toBe(0);
   });
 });
