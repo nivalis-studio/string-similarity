@@ -78,7 +78,7 @@ describe('compareTwoStrings', () => {
 
 describe('findBestMatch', () => {
   const badArgsErrorMsg =
-    'Bad arguments: First argument should be a string, second should be an array of strings';
+    'Bad arguments: mainString must be a non-empty string, targetStrings must be a non-empty array of strings';
 
   it('is a function', () => {
     expect(typeof findBestMatch).toBe('function');
