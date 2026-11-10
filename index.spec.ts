@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import { compareTwoStrings, findBestMatch } from './index';
+import type { BestMatch, Rating } from './index';
 
 describe('compareTwoStrings', () => {
   it('is a function', () => {
@@ -187,5 +188,14 @@ describe('findBestMatch', () => {
 
     expect(matches.bestMatch).toEqual({ target: 'sealed', rating: 0.8 });
     expect(matches.bestMatchIndex).toBe(0);
+  });
+});
+
+describe('exported types', () => {
+  it('exposes Rating and BestMatch for findBestMatch results', () => {
+    const result: BestMatch = findBestMatch('healed', ['sealed']);
+    const best: Rating = result.bestMatch;
+
+    expect(best).toEqual({ target: 'sealed', rating: 0.8 });
   });
 });

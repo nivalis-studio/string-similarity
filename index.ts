@@ -69,14 +69,16 @@ function compareTwoStrings(first: string, second: string): number {
 
 type Rating = { target: string; rating: number };
 
-function findBestMatch(
-  mainString: string,
-  targetStrings: Array<string>,
-): {
+type BestMatch = {
   ratings: Array<Rating>;
   bestMatch: Rating;
   bestMatchIndex: number;
-} {
+};
+
+function findBestMatch(
+  mainString: string,
+  targetStrings: Array<string>,
+): BestMatch {
   if (!areArgsValid(mainString, targetStrings)) {
     throw new Error(
       'Bad arguments: mainString must be a non-empty string, targetStrings must be a non-empty array of strings',
@@ -108,4 +110,5 @@ function findBestMatch(
   };
 }
 
+export type { BestMatch, Rating };
 export { compareTwoStrings, findBestMatch };

@@ -82,6 +82,14 @@ result.bestMatch.target;
 
 Invalid arguments throw an error. Pass a `mainString` that contains at least one non-whitespace character, and a non-empty array of strings.
 
+### Types
+
+`Rating` (`{ target: string; rating: number }`) and `BestMatch` (the object returned by `findBestMatch`) are exported as types:
+
+```ts
+import type { BestMatch, Rating } from '@nivalis/string-similarity';
+```
+
 ## Algorithm Notes
 
 - Based on bigram overlap (Dice coefficient) for predictable rankings
