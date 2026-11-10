@@ -40,10 +40,10 @@
 	},
 	"files": ["dist", "README.md"],
 	"devDependencies": {
-		"@biomejs/biome": "2.3.6",
+		"@biomejs/biome": "2.3.14",
 		"@commitlint/cli": "20.1.0",
 		"@commitlint/config-conventional": "20.0.0",
-		"@nivalis/biome-config": "2.3.6",
+		"@nivalis/biome-config": "2.3.14",
 		"@types/bun": "1.4.4",
 		"lefthook": "2.0.4",
 		"tsdown": "0.16.6",
