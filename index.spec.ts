@@ -2,89 +2,115 @@ import { describe, expect, it } from 'bun:test';
 import { compareTwoStrings, findBestMatch } from './index';
 import type { BestMatch, Rating } from './index';
 
+// Decimal places for float score comparisons (see CONTRIBUTING.md, "Testing precision").
+const PRECISION = 12;
+
+// Builds the expected rating object with a tolerance-based rating matcher.
+const closeRating = ({
+  target,
+  rating,
+}: {
+  target: string;
+  rating: number;
+}) => ({
+  target,
+  rating: expect.closeTo(rating, PRECISION),
+});
+
+const cases: Array<{ first: string; second: string; expected: number }> = [
+  { first: 'french', second: 'quebec', expected: 0 },
+  { first: 'france', second: 'france', expected: 1 },
+  { first: 'fRaNce', second: 'france', expected: 0.2 },
+  { first: 'healed', second: 'sealed', expected: 0.8 },
+  {
+    first: 'web applications',
+    second: 'applications of the web',
+    expected: 0.787_878_787_878_787_8,
+  },
+  {
+    first: 'this will have a typo somewhere',
+    second: 'this will huve a typo somewhere',
+    expected: 0.92,
+  },
+  {
+    first: 'Olive-green table for sale, in extremely good condition.',
+    second: 'For sale: table in very good  condition, olive green in colour.',
+    expected: 0.606_060_606_060_606_1,
+  },
+  {
+    first: 'Olive-green table for sale, in extremely good condition.',
+    second: 'For sale: green Subaru Impreza, 210,000 miles',
+    expected: 0.255_813_953_488_372_1,
+  },
+  {
+    first: 'Olive-green table for sale, in extremely good condition.',
+    second: 'Wanted: mountain bike with at least 21 gears.',
+    expected: 0.141_176_470_588_235_3,
+  },
+  {
+    first: 'this has one extra word',
+    second: 'this has one word',
+    expected: 0.774_193_548_387_096_8,
+  },
+  { first: 'a', second: 'a', expected: 1 },
+  { first: 'a', second: 'b', expected: 0 },
+  { first: '', second: '', expected: 1 },
+  { first: 'a', second: '', expected: 0 },
+  { first: '', second: 'a', expected: 0 },
+  { first: '   ', second: '\t', expected: 0 },
+  { first: '  ', second: '  ', expected: 1 },
+  { first: '   ', second: 'a', expected: 0 },
+  { first: 'apple event', second: 'apple    event', expected: 1 },
+  {
+    first: 'café noir',
+    second: 'café\u00A0noir',
+    expected: 1,
+  },
+  {
+    first: '東京\u3000駅',
+    second: '東京駅',
+    expected: 1,
+  },
+  {
+    first: 'iphone',
+    second: 'iphone x',
+    expected: 0.909_090_909_090_909_1,
+  },
+  {
+    // NFC (composed é) vs NFD (e + combining acute accent)
+    first: 'café',
+    second: 'cafe\u0301',
+    expected: 1,
+  },
+  {
+    // decomposed vs composed pair inside a longer string
+    first: 'un café noir bien serré',
+    second: 'un cafe\u0301 noir bien serre\u0301',
+    expected: 1,
+  },
+];
+
 describe('compareTwoStrings', () => {
   it('is a function', () => {
     expect(typeof compareTwoStrings).toEqual('function');
   });
 
-  it('returns the correct value for different inputs:', () => {
-    const testData = [
-      { first: 'french', second: 'quebec', expected: 0 },
-      { first: 'france', second: 'france', expected: 1 },
-      { first: 'fRaNce', second: 'france', expected: 0.2 },
-      { first: 'healed', second: 'sealed', expected: 0.8 },
-      {
-        first: 'web applications',
-        second: 'applications of the web',
-        expected: 0.787_878_787_878_787_8,
-      },
-      {
-        first: 'this will have a typo somewhere',
-        second: 'this will huve a typo somewhere',
-        expected: 0.92,
-      },
-      {
-        first: 'Olive-green table for sale, in extremely good condition.',
-        second:
-          'For sale: table in very good  condition, olive green in colour.',
-        expected: 0.606_060_606_060_606_1,
-      },
-      {
-        first: 'Olive-green table for sale, in extremely good condition.',
-        second: 'For sale: green Subaru Impreza, 210,000 miles',
-        expected: 0.255_813_953_488_372_1,
-      },
-      {
-        first: 'Olive-green table for sale, in extremely good condition.',
-        second: 'Wanted: mountain bike with at least 21 gears.',
-        expected: 0.141_176_470_588_235_3,
-      },
-      {
-        first: 'this has one extra word',
-        second: 'this has one word',
-        expected: 0.774_193_548_387_096_8,
-      },
-      { first: 'a', second: 'a', expected: 1 },
-      { first: 'a', second: 'b', expected: 0 },
-      { first: '', second: '', expected: 1 },
-      { first: 'a', second: '', expected: 0 },
-      { first: '', second: 'a', expected: 0 },
-      { first: '   ', second: '\t', expected: 0 },
-      { first: '  ', second: '  ', expected: 1 },
-      { first: '   ', second: 'a', expected: 0 },
-      { first: 'apple event', second: 'apple    event', expected: 1 },
-      {
-        first: 'café noir',
-        second: 'café\u00A0noir',
-        expected: 1,
-      },
-      {
-        first: '東京\u3000駅',
-        second: '東京駅',
-        expected: 1,
-      },
-      {
-        first: 'iphone',
-        second: 'iphone x',
-        expected: 0.909_090_909_090_909_1,
-      },
-      {
-        // NFC (composed é) vs NFD (e + combining acute accent)
-        first: 'café',
-        second: 'cafe\u0301',
-        expected: 1,
-      },
-      {
-        // decomposed vs composed pair inside a longer string
-        first: 'un café noir bien serré',
-        second: 'un cafe\u0301 noir bien serre\u0301',
-        expected: 1,
-      },
-    ];
+  it.each(cases)('scores %j', ({ first, second, expected }) => {
+    expect(compareTwoStrings(first, second)).toBeCloseTo(expected, PRECISION);
+  });
 
-    for (const td of testData) {
-      expect(compareTwoStrings(td.first, td.second)).toBe(td.expected);
-    }
+  it.each(cases)('is symmetric for %j', ({ first, second }) => {
+    expect(compareTwoStrings(second, first)).toBeCloseTo(
+      compareTwoStrings(first, second),
+      PRECISION,
+    );
+  });
+
+  it.each(cases)('stays within [0, 1] for %j', ({ first, second }) => {
+    const score = compareTwoStrings(first, second);
+
+    expect(score).toBeGreaterThanOrEqual(0);
+    expect(score).toBeLessThanOrEqual(1);
   });
 });
 
@@ -153,12 +179,14 @@ describe('findBestMatch', () => {
       'theatre',
     ]);
 
-    expect(matches.ratings).toEqual([
-      { target: 'mailed', rating: 0.4 },
-      { target: 'edward', rating: 0.2 },
-      { target: 'sealed', rating: 0.8 },
-      { target: 'theatre', rating: 0.363_636_363_636_363_65 },
-    ]);
+    expect(matches.ratings).toEqual(
+      [
+        { target: 'mailed', rating: 0.4 },
+        { target: 'edward', rating: 0.2 },
+        { target: 'sealed', rating: 0.8 },
+        { target: 'theatre', rating: 0.363_636_363_636_363_65 },
+      ].map(closeRating),
+    );
   });
 
   it('returns the best match and its similarity rating', () => {
@@ -169,7 +197,9 @@ describe('findBestMatch', () => {
       'theatre',
     ]);
 
-    expect(matches.bestMatch).toEqual({ target: 'sealed', rating: 0.8 });
+    expect(matches.bestMatch).toEqual(
+      closeRating({ target: 'sealed', rating: 0.8 }),
+    );
   });
 
   it('returns the index of best match from the target strings', () => {
@@ -186,7 +216,9 @@ describe('findBestMatch', () => {
   it('always returns a defined bestMatch, even for a single-element target list', () => {
     const matches = findBestMatch('healed', ['sealed']);
 
-    expect(matches.bestMatch).toEqual({ target: 'sealed', rating: 0.8 });
+    expect(matches.bestMatch).toEqual(
+      closeRating({ target: 'sealed', rating: 0.8 }),
+    );
     expect(matches.bestMatchIndex).toBe(0);
   });
 });
