@@ -46,7 +46,7 @@
 		"@nivalis/biome-config": "2.3.14",
 		"@types/bun": "1.4.4",
 		"lefthook": "2.0.4",
-		"tsdown": "0.16.6",
+		"tsdown": "0.23.7",
 		"typescript": "5.9.3"
 	},
 	"keywords": [
