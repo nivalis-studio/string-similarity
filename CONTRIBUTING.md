@@ -54,7 +54,8 @@ String similarity scores are floating-point values, so assert them with a determ
 2. Bump the version in `package.json` following semver.
 3. Update release notes in `README.md` (or a future changelog) with highlights.
 4. Run `bun run prepack` (or rely on `npm publish`/`bun publish` invoking the `prepack` script) to generate fresh build files.
-5. Publish with your package manager of choice (`npm publish`, `bun publish`, etc.).
+5. Run `bun run smoke` to confirm the built package imports by its own name and its type declarations exist. The script does not build, so run it after step 1 or step 4. Do not publish if it fails.
+6. Publish with your package manager of choice (`npm publish`, `bun publish`, etc.).
 
 ## Questions?
 
