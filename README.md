@@ -7,7 +7,7 @@ String similarity helpers powered by [Dice's coefficient](https://en.wikipedia.o
 - Modern TypeScript codebase with typed ESM builds
 - Fast O(n) bigram comparison implementation
 - Zero dependencies and side-effect free for optimal tree shaking
-- Works anywhere a JavaScript runtime with ES2020 support is available
+- Works anywhere a JavaScript runtime with ES2021 support is available
 
 ## Installation
 
@@ -80,12 +80,12 @@ result.bestMatch.target;
 // 'For sale: table in very good condition, olive green in colour.'
 ```
 
-Invalid arguments throw an error. Pass a non-empty `mainString` and a non-empty array of strings.
+Invalid arguments throw an error. Pass a `mainString` that contains at least one non-whitespace character, and a non-empty array of strings.
 
 ## Algorithm Notes
 
 - Based on bigram overlap (Dice coefficient) for predictable rankings
-- Ignores whitespace and repeated bigrams to reduce noise
+- Strips all whitespace before comparison. Repeated bigrams are counted, not collapsed: each occurrence must be matched separately, so `compareTwoStrings('aaaa', 'aa')` is `0.5`, not `1`
 - Inputs are Unicode-normalized to NFC before comparison, so composed and decomposed forms of the same text (e.g. `'café'` in NFC vs NFD) score identically
 - Known limitation: bigrams are formed from UTF-16 code units, so surrogate pairs (emoji and other astral-plane characters) are split across bigrams. Results stay deterministic and symmetric, but scores for emoji-heavy strings are approximate
 - Complexity is O(n) relative to total input length, making it suitable for realtime UI filtering
@@ -106,6 +106,24 @@ Automated hooks are managed by Lefthook. See [CONTRIBUTING.md](./CONTRIBUTING.md
 - Export an async/bulk API that can precompute bigrams for a target list and reuse them across multiple queries, reducing redundant work for search or autocomplete scenarios.
 
 ## Release Notes
+
+> **Note**: The 5.1.0 and 5.2.0 packages on npm cannot be imported (`ERR_MODULE_NOT_FOUND`): their `package.json` points at `dist/index.js` and `dist/index.d.ts`, but the build inside the package is `dist/index.mjs` and `dist/index.d.mts`. Stay on 5.0.0 or move to the next release.
+
+### Unreleased
+
+- `compareTwoStrings` no longer scores two different empty or whitespace-only strings as identical: `compareTwoStrings('   ', '\t')` now returns `0` (it returned `1`). Strictly equal inputs, such as two empty strings, still score `1`
+- `compareTwoStrings` normalizes both inputs to Unicode NFC before comparing, so composed and decomposed forms of the same text score `1`. For example, `'café'` written with a precomposed `é` (U+00E9) vs written as `e` plus a combining acute accent (U+0301) now returns `1` instead of `0.5714285714285714`
+- The error thrown by `findBestMatch` for invalid arguments now reads `Bad arguments: mainString must be a non-empty string, targetStrings must be a non-empty array of strings` (previously `Bad arguments: First argument should be a string, second should be an array of strings`). Update any code that matches on the message text
+- The published type of `findBestMatch(...).bestMatch` is now `{ target: string; rating: number }` instead of `{ target: string; rating: number } | undefined`, so TypeScript callers no longer need a null check. Runtime behaviour is unchanged
+- Removed the `typescript` peer dependency; the package has no peer dependencies
+
+### 5.2.0
+
+- No changes to the library code; tests and documentation only
+
+### 5.1.0
+
+- `findBestMatch` now throws when `mainString` is empty or whitespace-only. In 5.0.0 it returned a rating of `0` for every target
 
 ### 5.0.0
 
